@@ -9,7 +9,7 @@
 // specific enough to mean something.
 
 import {readFileSync, readdirSync, statSync} from 'node:fs';
-import {join, relative, extname} from 'node:path';
+import {join, relative, extname, sep} from 'node:path';
 import {createRequire} from 'node:module';
 
 const require = createRequire(import.meta.url);
@@ -103,7 +103,10 @@ export function scanSource(directory, wanted) {
         if (!hits.has(id)) hits.set(id, []);
         const list = hits.get(id);
         if (list.length < 10) {
-          list.push({file: relative(directory, file), line: i + 1, text: lines[i].trim().slice(0, 120)});
+          // Always reported with forward slashes: a path in a report is read by a person, and on
+          // Windows relative() would hand back backslashes.
+          const shown = relative(directory, file).split(sep).join('/');
+          list.push({file: shown, line: i + 1, text: lines[i].trim().slice(0, 120)});
         }
       }
     }
