@@ -1,0 +1,25 @@
+{
+  "name": "silent-defects",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Check your dependencies against defects that were measured and reproduced, not reported. bytes.parse('5MiB') returns 5; flat destroys a value when a key contains a dot. Zero dependencies.",
+  "bin": {"silent-defects": "./bin/cli.mjs"},
+  "main": "./src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./findings.json": "./src/findings.json"
+  },
+  "files": ["src", "bin", "README.md", "LICENSE"],
+  "engines": {"node": ">=18"},
+  "license": "MIT",
+  "author": "Tom Ryan",
+  "keywords": ["audit", "dependencies", "defects", "bugs", "bytes", "flat", "serialize-error", "correctness", "zero-dependency"],
+  "scripts": {
+    "test": "node --test test/api.test.mjs",
+    "verify": "npm test && node bin/cli.mjs --list && node bin/cli.mjs . --no-scan"
+  },
+  "publishConfig": {"access": "public", "registry": "https://registry.npmjs.org/"},
+  "repository": {"type": "git", "url": "git+https://github.com/Atomics-hub/silent-defects.git"},
+  "homepage": "https://tomryan.dev/silent-defects/",
+  "bugs": {"url": "https://github.com/Atomics-hub/silent-defects/issues"}
+}
