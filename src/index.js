@@ -186,7 +186,9 @@ export function formatReport(report, {color = false} = {}) {
   for (const r of results) {
     const severity = r.severity === 'high' ? c(RED, 'high  ') : c(YELLOW, 'medium');
     const version = r.installedVersion ? `@${r.installedVersion}` : '';
-    out.push(`${severity}  ${c(BOLD, r.package + version)}  ${r.headline}`);
+    // A configurable finding means the default is the hazard, not the library; say so up front.
+    const configurable = r.configurable ? c(DIM, ' (configurable)') : '';
+    out.push(`${severity}  ${c(BOLD, r.package + version)}${configurable}  ${r.headline}`);
     out.push(`        ${r.detail.split('\n')[0]}`);
     out.push(c(DIM, `        applies if: ${r.affectsYouIf}`));
     if (r.sourceMatches.length > 0) {
@@ -197,6 +199,10 @@ export function formatReport(report, {color = false} = {}) {
       if (r.sourceMatches.length > 3) out.push(c(DIM, `          ...and ${r.sourceMatches.length - 3} more`));
     }
     out.push(c(DIM, `        measured against ${r.package}@${r.measuredAgainst}`));
+    for (const report of r.priorReports ?? []) {
+      const when = report.state === 'open' && report.opened ? `open since ${report.opened}` : report.state;
+      out.push(c(DIM, `        prior report: ${report.url} (${when})`));
+    }
     out.push('');
   }
 
